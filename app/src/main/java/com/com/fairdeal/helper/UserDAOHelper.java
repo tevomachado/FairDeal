@@ -19,15 +19,16 @@ public class UserDAOHelper {
 
     public static User extractUserFromJson(JSONObject jsonObject) throws JSONException, ParseException {
         JSONArray userArray = jsonObject.getJSONArray("user");
+        JSONObject userObject = userArray.getJSONObject(0);
         User user = new User();
-        user.setId(userArray.getJSONObject(0).getLong("id"));
-        user.setStagNumber(userArray.getJSONObject(0).getString("stag_number"));
-        user.setDateOfBirth(stringToDate(userArray.getJSONObject(0).getString("date_of_birth")));
-        user.setBuildingId(userArray.getJSONObject(0).getLong("building_id"));
-        user.setPhoneNumber(userArray.getJSONObject(0).getString("phone_number"));
-        user.setFirstName(userArray.getJSONObject(0).getString("first_name"));
-        user.setLastName(userArray.getJSONObject(0).getString("last_name"));
-        user.setFbID(userArray.getJSONObject(0).getString("fb_id"));
+        user.setId(userObject.getLong("id"));
+        user.setStagNumber(userObject.getString("stag_number"));
+        user.setDateOfBirth(DateHelper.stringToDate(userObject.getString("date_of_birth")));
+        user.setBuildingId(userObject.getLong("building_id"));
+        user.setPhoneNumber(userObject.getString("phone_number"));
+        user.setFirstName(userObject.getString("first_name"));
+        user.setLastName(userObject.getString("last_name"));
+        user.setFbID(userObject.getString("fb_id"));
         return user;
     }
 
@@ -35,27 +36,18 @@ public class UserDAOHelper {
         JSONArray usersArray = jsonObject.getJSONArray("users");
         List<User> userList = new ArrayList<>();
         for(int i = 0; i < usersArray.length(); i++){
+            JSONObject userObject = usersArray.getJSONObject(i);
             User user = new User();
-            user.setId(usersArray.getJSONObject(i).getLong("id"));
-            user.setStagNumber(usersArray.getJSONObject(0).getString("stag_number"));
-            user.setDateOfBirth(stringToDate(usersArray.getJSONObject(0).getString("date_of_birth")));
-            user.setBuildingId(usersArray.getJSONObject(0).getLong("building_id"));
-            user.setPhoneNumber(usersArray.getJSONObject(0).getString("phone_number"));
-            user.setFirstName(usersArray.getJSONObject(0).getString("first_name"));
-            user.setLastName(usersArray.getJSONObject(0).getString("last_name"));
-            user.setFbID(usersArray.getJSONObject(0).getString("fb_id"));
+            user.setId(userObject.getLong("id"));
+            user.setStagNumber(userObject.getString("stag_number"));
+            user.setDateOfBirth(DateHelper.stringToDate(userObject.getString("date_of_birth")));
+            user.setBuildingId(userObject.getLong("building_id"));
+            user.setPhoneNumber(userObject.getString("phone_number"));
+            user.setFirstName(userObject.getString("first_name"));
+            user.setLastName(userObject.getString("last_name"));
+            user.setFbID(userObject.getString("fb_id"));
             userList.add(user);
         }
         return userList;
     }
-
-    public static String dateToDbFormat(Date date){
-        return new SimpleDateFormat("yyyy-MM-dd").format(date);
-    }
-
-    public static Date stringToDate(String date) throws ParseException {
-        return new SimpleDateFormat("yyyy-MM-dd").parse(date);
-    }
-
-
 }

@@ -3,6 +3,7 @@ package com.fairdeal.dao;
 import android.content.SyncStatusObserver;
 
 import com.com.fairdeal.entity.User;
+import com.com.fairdeal.helper.DateHelper;
 import com.com.fairdeal.helper.JSONParser;
 import com.com.fairdeal.helper.PostCall;
 import com.com.fairdeal.helper.UserDAOHelper;
@@ -27,8 +28,8 @@ public class UserDAO implements InterfaceDAO<User> {
     private String updateUrl = "http://10.0.2.2/android_connect/user/update_user.php";
     private String getUrl = "http://10.0.2.2/android_connect/user/get_user_details.php";
     private String getAllUrl = "http://10.0.2.2/android_connect/user/get_all_users.php";
-
-
+    private String getUserFbIdUrl = "http://10.0.2.2/android_connect/user/get_user_fbid.php";
+    private String getUserByStagNumberUrl = "http://10.0.2.2/android_connect/user/get_user_stag.php";
 
     private JSONParser jsonParser;
 
@@ -44,8 +45,8 @@ public class UserDAO implements InterfaceDAO<User> {
         params.add(new BasicNameValuePair("last_name", user.getLastName()));
         params.add(new BasicNameValuePair("phone_number", user.getPhoneNumber()));
         params.add(new BasicNameValuePair("building_id", user.getBuildingId().toString()));
-        params.add(new BasicNameValuePair("stag_number", user.getStagNumber().toString()));
-        params.add(new BasicNameValuePair("date_of_birth", UserDAOHelper.dateToDbFormat(user.getDateOfBirth())));
+        params.add(new BasicNameValuePair("stag_number", user.getStagNumber()));
+        params.add(new BasicNameValuePair("date_of_birth", DateHelper.dateToDbFormat(user.getDateOfBirth())));
         params.add(new BasicNameValuePair("fb_id", user.getFbID()));
 
         try {
@@ -88,8 +89,8 @@ public class UserDAO implements InterfaceDAO<User> {
         params.add(new BasicNameValuePair("last_name", user.getLastName()));
         params.add(new BasicNameValuePair("phone_number", user.getPhoneNumber()));
         params.add(new BasicNameValuePair("building_id", user.getBuildingId().toString()));
-        params.add(new BasicNameValuePair("stag_number", user.getStagNumber().toString()));
-        params.add(new BasicNameValuePair("date_of_birth",UserDAOHelper.dateToDbFormat(user.getDateOfBirth())));
+        params.add(new BasicNameValuePair("stag_number", user.getStagNumber()));
+        params.add(new BasicNameValuePair("date_of_birth",DateHelper.dateToDbFormat(user.getDateOfBirth())));
         params.add(new BasicNameValuePair("fb_id", user.getFbID()));
 
         try {
@@ -148,5 +149,49 @@ public class UserDAO implements InterfaceDAO<User> {
             }
 
         return userList;
+    }
+
+    public User getUserByFbId(String fbId){
+        User user = null;
+        List<NameValuePair> params = new ArrayList<>();
+        params.add(new BasicNameValuePair("fb_id", fbId));
+
+        try {
+            JSONObject result = new PostCall(params, this.getUserFbIdUrl, this.jsonParser).execute().get();
+            if (result != null) {
+                user = UserDAOHelper.extractUserFromJson(result);
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return user;
+    }
+
+    public User getUserByStagNumber(String stagNumber){
+        User user = null;
+        List<NameValuePair> params = new ArrayList<>();
+        params.add(new BasicNameValuePair("stag_number", stagNumber));
+
+        try {
+            JSONObject result = new PostCall(params, this.getUserByStagNumberUrl, this.jsonParser).execute().get();
+            if (result != null) {
+                user = UserDAOHelper.extractUserFromJson(result);
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return user;
     }
 }
