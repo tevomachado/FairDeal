@@ -26,6 +26,7 @@ public class AnnouncementDAO implements InterfaceDAO<Announcement> {
     private String getUrl = "http://10.0.2.2/android_connect/announcement/get_announcement_details.php";
     private String getAllUrl = "http://10.0.2.2/android_connect/announcement/get_all_announcements.php";
     private String getUserAnnouncementsUrl = "http://10.0.2.2/android_connect/announcement/get_user_announcements.php";
+    private String getAnnouncementsByTitleUrl = "http://10.0.2.2/android_connect/announcement/get_announcements_by_title.php";
 
     private JSONParser jsonParser;
 
@@ -154,6 +155,27 @@ public class AnnouncementDAO implements InterfaceDAO<Announcement> {
         params.add(new BasicNameValuePair("announcer_id", userId));
         try {
             JSONObject result = new PostCall(params, this.getUserAnnouncementsUrl, this.jsonParser).execute().get();
+            if(result != null){
+                announcementList = AnnouncementDAOHelper.extractMultipleAnnouncementsFromJson(result);
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return announcementList;
+    }
+
+    public List<Announcement> getAnnouncementsByTitle(String title){
+        List<Announcement> announcementList = null;
+        List<NameValuePair> params = new ArrayList<>();
+        params.add(new BasicNameValuePair("title", title));
+        try {
+            JSONObject result = new PostCall(params, this.getAnnouncementsByTitleUrl, this.jsonParser).execute().get();
             if(result != null){
                 announcementList = AnnouncementDAOHelper.extractMultipleAnnouncementsFromJson(result);
             }
